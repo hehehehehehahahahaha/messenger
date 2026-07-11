@@ -12,19 +12,18 @@ import java.util.function.BiConsumer;
 @RequiredArgsConstructor
 public class KafkaProducerService {
 
-    private static final String MESSAGES_TOPIC_NAME = "messages";
-    private static final String EVENTS_TOPIC_NAME = "events";
+
     private final KafkaTemplate<String, EventDTO> kafkaTemplate;
 
     public void sendMessage(EventDTO event, BiConsumer<SendResult<String, EventDTO>, Throwable> callback) {
-        kafkaTemplate.send(MESSAGES_TOPIC_NAME, event).whenComplete(callback);
+        kafkaTemplate.send(KafkaTopicConstant.MESSAGES_TOPIC_NAME, event).whenComplete(callback);
     }
 
     public void sendMessage(EventDTO event) {
-        kafkaTemplate.send(MESSAGES_TOPIC_NAME, event);
+        kafkaTemplate.send(KafkaTopicConstant.MESSAGES_TOPIC_NAME, event);
     }
 
     public void sendEvent(EventDTO event) {
-        kafkaTemplate.send(EVENTS_TOPIC_NAME, event);
+        kafkaTemplate.send(KafkaTopicConstant.EVENTS_TOPIC_NAME, event);
     }
 }

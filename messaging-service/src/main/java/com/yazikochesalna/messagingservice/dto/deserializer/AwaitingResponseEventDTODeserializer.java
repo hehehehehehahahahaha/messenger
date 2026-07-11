@@ -13,6 +13,8 @@ import java.io.IOException;
 
 public class AwaitingResponseEventDTODeserializer extends StdDeserializer<AwaitingResponseEventDTO> {
 
+    private static final String REQUEST_ID = "requestId";
+
     public AwaitingResponseEventDTODeserializer() {
         this(AwaitingResponseEventDTO.class);
     }
@@ -36,8 +38,8 @@ public class AwaitingResponseEventDTODeserializer extends StdDeserializer<Awaiti
                 .setPayload(payload);
 
 
-        if (node.get("requestId") != null) {
-            Long requestId = Long.valueOf(node.get("requestId").asText());
+        if (node.get(REQUEST_ID) != null) {
+            Long requestId = Long.valueOf(node.get(REQUEST_ID).asText());
             messageDTO.setRequestId(requestId);
         }
 

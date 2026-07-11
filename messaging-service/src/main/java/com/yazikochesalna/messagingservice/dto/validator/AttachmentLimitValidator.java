@@ -8,6 +8,10 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.List;
 
 public class AttachmentLimitValidator implements ConstraintValidator<ValidAttachmentLimits, List<AttachmentDTO>> {
+
+    private static final String FILE_CONSTRAINT_MESSAGE = "Cannot have more than 10 FILE attachments";
+    private static final String REPLY_CONSTRAINT_MESSAGE = "Cannot have more than 1 REPLY attachment";
+
     @Override
     public void initialize(ValidAttachmentLimits constraintAnnotation) {
     }
@@ -25,7 +29,7 @@ public class AttachmentLimitValidator implements ConstraintValidator<ValidAttach
         if (fileCount > 10) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
-                            "Cannot have more than 10 FILE attachments")
+                            FILE_CONSTRAINT_MESSAGE)
                     .addConstraintViolation();
             return false;
         }
@@ -38,7 +42,7 @@ public class AttachmentLimitValidator implements ConstraintValidator<ValidAttach
         if (replyCount > 1) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
-                            "Cannot have more than 1 REPLY attachment")
+                            REPLY_CONSTRAINT_MESSAGE)
                     .addConstraintViolation();
             return false;
         }

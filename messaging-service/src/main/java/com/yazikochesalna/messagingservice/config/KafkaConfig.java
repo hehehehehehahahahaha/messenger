@@ -16,6 +16,7 @@ import java.util.UUID;
 @Configuration
 @RequiredArgsConstructor
 public class KafkaConfig {
+    private static final String CONSUMER_GROUP_PREFIX = "messaging-service-instance-";
     private final KafkaProperties kafkaProperties;
 
     @Bean
@@ -32,7 +33,7 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, EventDTO> consumerFactory() {
         Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties());
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "messaging-service-instance-" + UUID.randomUUID());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, CONSUMER_GROUP_PREFIX + UUID.randomUUID());
 
         return new DefaultKafkaConsumerFactory<>(props);
     }

@@ -15,9 +15,9 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
-    public static final String TOKEN_QUERY_PREFIX = "token=";
-    public static final String USER_ID_SESSION_ATTRIBUTE_NAME = "userId";
-    public static final String ERROR_MESSAGE_CUSTOM_HEADER_NAME = "X-Error-Message";
+    private static final String TOKEN_QUERY_PREFIX = "token=";
+    private static final String USER_ID_SESSION_ATTRIBUTE_NAME = "userId";
+    private static final String ERROR_MESSAGE_CUSTOM_HEADER_NAME = "X-Error-Message";
     private final RedissonWebSocketTokenService tokenService;
 
     @Override

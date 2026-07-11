@@ -22,7 +22,7 @@ import java.util.Map;
 @SecurityRequirement(name = "bearerAuth")
 public class ConnectionController {
 
-
+    private static final String TOKEN = "token";
     private final RedissonWebSocketTokenService tokenService;
 
     @PostMapping("/connect")
@@ -45,6 +45,6 @@ public class ConnectionController {
 
         String token = tokenService.generateToken(userId);
 
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity.ok(Map.of(TOKEN, token));
     }
 }

@@ -13,13 +13,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
+    private static final String WEBSOCKET_PATH = "/api/v1/ws";
     private final ChatWebSocketHandler chatWebSocketHandler;
     private final WebSocketHandshakeInterceptor webSocketHandshakeInterceptor;
     private final FrontendProperties frontendProperties;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(chatWebSocketHandler, "/api/v1/ws")
+        registry.addHandler(chatWebSocketHandler, WEBSOCKET_PATH)
                 .addInterceptors(webSocketHandshakeInterceptor)
                 .setAllowedOrigins(frontendProperties.getOrigins().toArray(new String[0]));
     }

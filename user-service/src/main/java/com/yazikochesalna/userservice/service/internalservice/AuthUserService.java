@@ -22,7 +22,7 @@ public class AuthUserService {
     public Users createUser(String username) {
 
         if (usersRepository.existsByUsername(username)) {
-            throw new UserAlreadyExistsCustomException("Username already exists");
+            throw new UserAlreadyExistsCustomException(UserAlreadyExistsCustomException.MessageType.MESSAGE_ENG);
         }
 
         Users user = new Users();
