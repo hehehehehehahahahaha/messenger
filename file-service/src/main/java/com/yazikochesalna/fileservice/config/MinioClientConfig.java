@@ -1,27 +1,24 @@
 package com.yazikochesalna.fileservice.config;
 
+import com.yazikochesalna.fileservice.config.properties.MinioProperties;
 import io.minio.MinioClient;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+@EnableConfigurationProperties(MinioProperties.class)
 @Configuration
+@RequiredArgsConstructor
 public class MinioClientConfig {
 
-    @Value("${minio.access-key}")
-    private String accessKey;
-
-    @Value("${minio.secret-key}")
-    private String secretKey;
-
-    @Value("${minio.url}")
-    private String url;
+    private final MinioProperties minioProperties;
 
     @Bean
     public MinioClient minioClient() {
         return MinioClient.builder()
-                .endpoint(url)
-                .credentials(accessKey, secretKey)
+                .endpoint(minioProperties.url())
+                .credentials(minioProperties.accessKey(), minioProperties.secretKey())
                 .build();
     }
 }

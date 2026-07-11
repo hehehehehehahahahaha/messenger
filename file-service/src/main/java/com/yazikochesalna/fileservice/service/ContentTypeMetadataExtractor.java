@@ -26,6 +26,18 @@ import java.util.Map;
 public class ContentTypeMetadataExtractor {
 
     private static final String DIGITS_ONLY_REGEX = "\\d+";
+    private static final String IMAGE_PREFIX = "image/";
+    private static final String AUDIO_PREFIX = "audio/";
+    private static final String VIDEO_PREFIX = "video/";
+    private static final String WIDTH = "width";
+    private static final String HEIGHT = "height";
+    private static final String DURATION = "duration";
+    private static final String AUDIO_MPEG_CONTENT_TYPE = "audio/mpeg";
+    private static final String VIDEO_MP_4_CONTENT_TYPE = "video/mp4";
+    private static final String XMP_DM_DURATION = "xmpDM:duration";
+    private static final String TIME_LENGTH = "TimeLength";
+    private static final String LENGTH = "length";
+    private static final String DURATION_FORMAT = "%.2f";
 
     public Map<String, String> extractMetadataByContentType(MultipartFile file) {
         Map<String, String> metadata = new HashMap<>();
@@ -36,15 +48,15 @@ public class ContentTypeMetadataExtractor {
         }
 
         try (InputStream stream = file.getInputStream()) {
-            if (contentType.startsWith("image/")) {
+            if (contentType.startsWith(IMAGE_PREFIX)) {
                 BufferedImage img = ImageIO.read(stream);
                 if (img != null) {
-                    metadata.put("width", String.valueOf(img.getWidth()));
-                    metadata.put("height", String.valueOf(img.getHeight()));
+                    metadata.put(WIDTH, String.valueOf(img.getWidth()));
+                    metadata.put(HEIGHT, String.valueOf(img.getHeight()));
                 }
             }
 
-            else if (contentType.startsWith("audio/") || contentType.startsWith("video/")) {
+            else if (contentType.startsWith(AUDIO_PREFIX) || contentType.startsWith(VIDEO_PREFIX)) {
                 metadata.putAll(extractMediaMetadata(file));
             }
 
@@ -65,7 +77,7 @@ public class ContentTypeMetadataExtractor {
             parser.parse(stream, new BodyContentHandler(), tikaMetadata, context);
 
             String duration = getDuration(tikaMetadata);
-            addIfNotNull(metadata, "duration", duration);
+            addIfNotNull(metadata, DURATION, duration);
 
         } catch (Exception e) {
             log.error("Media metadata extraction failed", e);
@@ -75,9 +87,9 @@ public class ContentTypeMetadataExtractor {
 
     private Parser selectParser(String contentType) {
         if (contentType != null) {
-            if (contentType.equals("audio/mpeg")) {
+            if (contentType.equals(AUDIO_MPEG_CONTENT_TYPE)) {
                 return new Mp3Parser();
-            } else if (contentType.equals("video/mp4")) {
+            } else if (contentType.equals(VIDEO_MP_4_CONTENT_TYPE)) {
                 return new MP4Parser();
             }
         }
@@ -86,10 +98,10 @@ public class ContentTypeMetadataExtractor {
 
     private String getDuration(Metadata metadata) {
         var durationKeys = List.of(
-                "duration",
-                "xmpDM:duration",
-                "TimeLength",
-                "length"
+                DURATION,
+                XMP_DM_DURATION,
+                TIME_LENGTH,
+                LENGTH
         );
 
         for (String key : durationKeys) {
@@ -107,7 +119,7 @@ public class ContentTypeMetadataExtractor {
             // конвертируем в секунды с двумя знаками после запятой ("1.50").
             if (rawDuration.matches(DIGITS_ONLY_REGEX)) {
                 long millis = Long.parseLong(rawDuration);
-                return String.format("%.2f", millis / 1000.0);
+                return String.format(DURATION_FORMAT, millis / 1000.0);
             }
             // Иначе возвращаем как есть (например, "1.5s", "12:34").
             return rawDuration;

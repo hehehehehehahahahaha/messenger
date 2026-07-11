@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 public class MessageStorageServiceClientImpl implements MessageStorageServiceClient {
     private static final String LAST_MESSAGES_IN_CHATS_URL_FORMAT = "%s/api/v1/messages/newest";
     private static final Logger logger = LoggerFactory.getLogger(MessageStorageServiceClient.class);
-    public static final String MESSAGES_FIELD_NAME = "messages";
-    public static final String CHAT_ID_FIELD_NAME = "chatId";
-    public static final String LAST_MESSAGE_FIELD_NAME = "lastMessage";
+    private static final String MESSAGES_FIELD_NAME = "messages";
+    private static final String CHAT_ID_FIELD_NAME = "chatId";
+    private static final String LAST_MESSAGE_FIELD_NAME = "lastMessage";
 
     private final JwtService jwtService;
     private final WebClient userServiceWebClient;

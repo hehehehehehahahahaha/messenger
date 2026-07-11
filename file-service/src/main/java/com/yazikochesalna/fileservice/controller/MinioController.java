@@ -2,11 +2,13 @@ package com.yazikochesalna.fileservice.controller;
 
 import com.yazikochesalna.fileservice.advice.NotAttachedException;
 import com.yazikochesalna.fileservice.advice.MinioFileNotFoundCustomException;
+import com.yazikochesalna.fileservice.config.properties.MinioProperties;
 import com.yazikochesalna.fileservice.data.BaseFileInfo;
 import com.yazikochesalna.fileservice.dto.RequestDTO;
 import com.yazikochesalna.fileservice.dto.UploadResponseDTO;
 import com.yazikochesalna.fileservice.service.*;
-import io.minio.*;
+import io.minio.MinioClient;
+import io.minio.StatObjectResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -32,11 +34,7 @@ import java.io.InputStream;
 @Tag(name = "Minio API")
 public class MinioController {
 
-    @Autowired
     private MinioClient minioClient;
-
-    @Value("${minio.bucket.name}")
-    private String BUCKET;
 
     private final UploadMinioService uploadMinioService;
     private final GetMetadataMinioService getFileMetadataService;
@@ -52,7 +50,7 @@ public class MinioController {
 
         try {
             if (file.isEmpty()) {
-                throw new NotAttachedException("File is empty or not attached");
+                throw new NotAttachedException(NotAttachedException.MessageType.EMPTY_FILE);
             }
 
             UploadResponseDTO response = uploadMinioService.uploadFileWithMetadata(file, metadata);
@@ -70,7 +68,7 @@ public class MinioController {
             throws MinioFileNotFoundCustomException {
 
         if (requestDTO.getFileUUID() == null){
-            throw new NotAttachedException("fileUUID not provided in metadata");
+            throw new NotAttachedException(NotAttachedException.MessageType.EMPTY_UUID_IN_METADATA);
         }
 
         String folder = commonService.resolveFolderName(requestDTO);
@@ -89,7 +87,7 @@ public class MinioController {
             @Valid @ModelAttribute RequestDTO requestDTO) throws MinioFileNotFoundCustomException {
 
         if (requestDTO.getFileUUID() == null){
-            throw new NotAttachedException("fileUUID not provided in metadata");
+            throw new NotAttachedException(NotAttachedException.MessageType.EMPTY_UUID_IN_METADATA);
         }
 
         String objectPath = commonService.resolveFolderName(requestDTO) + requestDTO.getFileUUID();

@@ -2,10 +2,12 @@ package com.yazikochesalna.fileservice.service;
 
 import com.yazikochesalna.fileservice.advice.MinioServerCustomException;
 import com.yazikochesalna.fileservice.advice.MinioUploadCustomException;
+import com.yazikochesalna.fileservice.config.properties.MinioProperties;
 import com.yazikochesalna.fileservice.data.MetadataKeys;
 import com.yazikochesalna.fileservice.dto.RequestDTO;
 import com.yazikochesalna.fileservice.dto.UploadResponseDTO;
-import io.minio.*;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UploadMinioService {
-
-    @Autowired
+    
     private MinioClient minioClient;
 
-    @Value("${minio.bucket.name}")
-    private String BUCKET;
+    private final MinioProperties minioProperties;
 
     private static final long MINIO_AUTO_PART_SIZE = -1;
 
@@ -47,9 +47,9 @@ public class UploadMinioService {
 
             return new UploadResponseDTO(extractFileIdFromObjectName(objectName));
         } catch (IllegalArgumentException e) {
-            throw new MinioUploadCustomException("Invalid input parameters: " + e.getMessage());
+            throw new MinioUploadCustomException(MinioUploadCustomException.MessageType.INVALID_INPUT, e.getMessage());
         } catch (IOException e) {
-            throw new MinioUploadCustomException("File processing error: " + e.getMessage());
+            throw new MinioUploadCustomException(MinioUploadCustomException.MessageType.PROCESSING_ERROR, e.getMessage());
         }
     }
 
@@ -60,7 +60,7 @@ public class UploadMinioService {
         try (InputStream inputStream = file.getInputStream()) {
             minioClient.putObject(
                     PutObjectArgs.builder()
-                            .bucket(BUCKET)
+                            .bucket(minioProperties.bucket().name())
                             .object(objectName)
                             .stream(inputStream, file.getSize(), MINIO_AUTO_PART_SIZE)
                             .contentType(file.getContentType())
@@ -68,12 +68,12 @@ public class UploadMinioService {
                             .build()
             );
         } catch (ErrorResponseException e) {
-            throw new MinioUploadCustomException("Failed to upload file: " + e.getMessage());
+            throw new MinioUploadCustomException(MinioUploadCustomException.MessageType.UPLOAD_ERROR, e.getMessage());
         } catch (InsufficientDataException | InternalException e) {
-            throw new MinioServerCustomException("MinIO internal error: " + e.getMessage());
+            throw new MinioServerCustomException(MinioServerCustomException.MessageType.INTERNAL_ERROR, e.getMessage());
         } catch (InvalidResponseException | XmlParserException | ServerException |
                  InvalidKeyException | NoSuchAlgorithmException | IOException e) {
-            throw new MinioServerCustomException("Error during file upload: " + e.getMessage());
+            throw new MinioServerCustomException(MinioServerCustomException.MessageType.DURING_UPLOAD_ERROR, e.getMessage());
         }
     }
 
