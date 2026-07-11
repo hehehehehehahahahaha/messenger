@@ -20,11 +20,14 @@ import java.util.stream.Collectors;
 public class MessageStorageServiceClientImpl implements MessageStorageServiceClient {
     private static final String LAST_MESSAGES_IN_CHATS_URL_FORMAT = "%s/api/v1/messages/newest";
     private static final Logger logger = LoggerFactory.getLogger(MessageStorageServiceClient.class);
+    public static final String MESSAGES_FIELD_NAME = "messages";
+    public static final String CHAT_ID_FIELD_NAME = "chatId";
+    public static final String LAST_MESSAGE_FIELD_NAME = "lastMessage";
 
     private final JwtService jwtService;
     private final WebClient userServiceWebClient;
     private final MessageStorageServiceProperties messageStorageServiceProperties;
-
+    // todo переписать на jsonNode
     public Map<Long, Object> getLastMessages(List<Long> chatIds) {
         String url = String.format(LAST_MESSAGES_IN_CHATS_URL_FORMAT, messageStorageServiceProperties.getUrl());
 
@@ -41,18 +44,18 @@ public class MessageStorageServiceClientImpl implements MessageStorageServiceCli
                     .block();
 
             assert messages != null;
-            List<Map<String, Object>> messagesList = (List<Map<String, Object>>) messages.get("messages") ;
+            List<Map<String, Object>> messagesList = (List<Map<String, Object>>) messages.get(MESSAGES_FIELD_NAME) ;
             Map<Long, Object>  messagesMap = messagesList.stream()
                     .filter((stringObjectMap ->
                             stringObjectMap != null &&
-                                    stringObjectMap.containsKey("chatId")&&
-                                    stringObjectMap.containsKey("lastMessage")&&
-                                    stringObjectMap.get("chatId") != null &&
-                                    stringObjectMap.get("lastMessage") != null
+                                    stringObjectMap.containsKey(CHAT_ID_FIELD_NAME)&&
+                                    stringObjectMap.containsKey(LAST_MESSAGE_FIELD_NAME)&&
+                                    stringObjectMap.get(CHAT_ID_FIELD_NAME) != null &&
+                                    stringObjectMap.get(LAST_MESSAGE_FIELD_NAME) != null
                     ))
                    .collect(Collectors.toMap(
-                            entry -> ((Number) entry.get("chatId")).longValue(),
-                            entry -> entry.get("lastMessage"),
+                            entry -> ((Number) entry.get(CHAT_ID_FIELD_NAME)).longValue(),
+                            entry -> entry.get(LAST_MESSAGE_FIELD_NAME),
                             (existing, replacement) -> existing
                     ));
             return messagesMap;

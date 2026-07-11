@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 @Service
 public class ChatService {
 
+    private static final String DIALOG_NOT_FOUND_MESSAGE = "No dialog between %d and %d";
     private final ChatRepository chatRepository;
     private final ChatUsersRepository chatUsersRepository;
 
@@ -167,7 +168,7 @@ public class ChatService {
         if (dialogInDB != null) {
             return new GetDialogResponseDto(dialogInDB);
         }
-        throw new DialogNotFoundException("No dialog between " + userId + " and " + partnerId);
+        throw new DialogNotFoundException(DIALOG_NOT_FOUND_MESSAGE.formatted(userId, partnerId));
     }
 
     public GetDialogResponseDto getOrCreateDialog(final long userId, final long partnerId) {

@@ -16,11 +16,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class InvalidArgumentExceptionHandler {
 
+    private static final String VALIDATION_ERROR_MESSAGE = "Validation Error";
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CustomErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = getErrors(ex);
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        CustomErrorResponse response = new CustomErrorResponse(status, "Validation Error", errors);
+        CustomErrorResponse response = new CustomErrorResponse(status, VALIDATION_ERROR_MESSAGE, errors);
         return new ResponseEntity<>(response, status);
     }
 
