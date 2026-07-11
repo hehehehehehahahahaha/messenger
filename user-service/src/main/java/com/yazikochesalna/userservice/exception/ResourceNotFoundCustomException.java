@@ -1,5 +1,6 @@
 package com.yazikochesalna.userservice.exception;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -11,9 +12,9 @@ public class ResourceNotFoundCustomException extends RuntimeException {
         super(messageType.message);
     }
     public ResourceNotFoundCustomException(MessageType messageType, Object... args) {
-        super(messageType.message.formatted(args));
+        super(messageType.getMessage().formatted(args));
     }
-
+    @Getter
     @RequiredArgsConstructor
     public enum MessageType{
         USER_NOT_FOUND("User not found"),

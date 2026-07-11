@@ -1,5 +1,6 @@
 package com.yazikochesalna.fileservice.advice;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,8 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class MinioServerCustomException extends RuntimeException {
 
     public MinioServerCustomException(MessageType messageType, String sourceMessage) {
-        super(messageType.message + " : " + sourceMessage);
+        super(messageType.getMessage() + " : " + sourceMessage);
     }
+
+    @Getter
     @RequiredArgsConstructor
     public enum MessageType {
         INIT_BUCKET_FAILED("Failed to initialize MinIO bucket"),

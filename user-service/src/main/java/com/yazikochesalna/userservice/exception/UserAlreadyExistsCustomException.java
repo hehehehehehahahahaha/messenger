@@ -1,5 +1,6 @@
 package com.yazikochesalna.userservice.exception;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -7,9 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.CONFLICT)
 public class UserAlreadyExistsCustomException extends RuntimeException {
     public UserAlreadyExistsCustomException(MessageType messageType) {
-        super(messageType.message);
+        super(messageType.getMessage());
     }
-
+    @Getter
     @RequiredArgsConstructor
     public enum MessageType{
         MESSAGE_RUS("Такой username уже существует"),

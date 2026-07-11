@@ -32,7 +32,7 @@ public class DTODeserializer {
 
 
     public static Instant getTime(JsonNode node) {
-        JsonNode timestampNode = node.get(DTOField.TIMESTAMP.name());
+        JsonNode timestampNode = node.get(DTOFieldConstant.TIMESTAMP);
         if (timestampNode.isNumber()) {
             double timestampValue = timestampNode.asDouble();
             long seconds = (long) timestampValue;
@@ -45,7 +45,7 @@ public class DTODeserializer {
     }
 
     public static PayloadDTO getPayload(ObjectMapper mapper, EventType type, JsonNode node) throws IOException {
-        JsonNode payloadNode = node.get(DTOField.PAYLOAD.name());
+        JsonNode payloadNode = node.get(DTOFieldConstant.PAYLOAD);
 
         Class<? extends PayloadDTO> dtoClass = MESSAGE_TYPE_TO_DTO.get(type);
 
@@ -58,7 +58,7 @@ public class DTODeserializer {
 
 
     public static EventType getMessageType(JsonNode node) throws IOException {
-        JsonNode typeNode = node.get(DTOField.TYPE.name());
+        JsonNode typeNode = node.get(DTOFieldConstant.TYPE);
         if (typeNode == null) {
             throw new IOException("Field 'type' is missing in JSON");
         }
@@ -73,6 +73,6 @@ public class DTODeserializer {
     }
 
     public static UUID getMessageId(JsonNode node) {
-        return UUID.fromString(node.get(DTOField.MESSAGE_ID.name()).asText());
+        return UUID.fromString(node.get(DTOFieldConstant.MESSAGE_ID).asText());
     }
 }

@@ -1,5 +1,6 @@
 package com.yazikochesalna.fileservice.advice;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -7,8 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class MinioUploadCustomException extends RuntimeException {
     public MinioUploadCustomException(MessageType messageType, String sourceMessage) {
-        super(messageType.message + " : " + sourceMessage);
+        super(messageType.getMessage() + " : " + sourceMessage);
     }
+    @Getter
     @RequiredArgsConstructor
     public enum MessageType {
         INVALID_INPUT("Invalid input parameters"),

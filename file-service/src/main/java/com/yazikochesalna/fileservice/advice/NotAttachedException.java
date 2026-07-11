@@ -1,6 +1,7 @@
 package com.yazikochesalna.fileservice.advice;
 
-import lombok.AllArgsConstructor;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -8,9 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class NotAttachedException extends RuntimeException {
     public NotAttachedException(MessageType messageType) {
-        super(messageType.message);
+        super(messageType.getMessage());
     }
 
+    @Getter
     @RequiredArgsConstructor
     public enum MessageType {
         EMPTY_FILE("File is empty or not attached"),
@@ -19,7 +21,5 @@ public class NotAttachedException extends RuntimeException {
         EMPTY_FILE_OWNER("Neither chatID nor userID provided in metadata")
         ;
         private final String message;
-
-
     }
 }
