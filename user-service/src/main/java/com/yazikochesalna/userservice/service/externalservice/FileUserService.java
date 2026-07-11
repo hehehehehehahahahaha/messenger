@@ -31,7 +31,7 @@ public class FileUserService {
     private void updateUserFileUuid(Long userId, UUID fileUuid) {
 
         Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundCustomException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundCustomException(ResourceNotFoundCustomException.MessageType.USER_NOT_FOUND));
 
         usersRepository.updateFileUuid(userId, fileUuid);
     }

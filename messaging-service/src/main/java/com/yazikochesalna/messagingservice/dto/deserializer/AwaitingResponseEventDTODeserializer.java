@@ -36,8 +36,8 @@ public class AwaitingResponseEventDTODeserializer extends StdDeserializer<Awaiti
                 .setPayload(payload);
 
 
-        if (node.get("requestId") != null) {
-            Long requestId = Long.valueOf(node.get("requestId").asText());
+        if (node.get(DTOFieldConstant.REQUEST_ID) != null) {
+            Long requestId = Long.valueOf(node.get(DTOFieldConstant.REQUEST_ID).asText());
             messageDTO.setRequestId(requestId);
         }
 

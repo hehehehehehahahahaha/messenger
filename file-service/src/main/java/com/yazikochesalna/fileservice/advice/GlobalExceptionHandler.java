@@ -15,13 +15,18 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String TIMESTAMP = "timestamp";
+    private static final String PATH = "path";
+    private static final String URI_PREFIX = "uri=";
+    private static final String DEFAULT_EXCEPTION_MESSAGE = "Произошла ошибка";
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomErrorResponse> handleException(Exception ex, WebRequest request) {
         Map<String, Object> details = new HashMap<>();
-        details.put("timestamp", LocalDateTime.now());
-        details.put("path", request.getDescription(false).replace("uri=", ""));
+        details.put(TIMESTAMP, LocalDateTime.now());
+        details.put(PATH, request.getDescription(false).replace(URI_PREFIX, ""));
 
-        String message = ex.getMessage() != null ? ex.getMessage() : "Произошла ошибка";
+        String message = ex.getMessage() != null ? ex.getMessage() : DEFAULT_EXCEPTION_MESSAGE;
 
         return new ResponseEntity<>(
                 new CustomErrorResponse(message, details),
@@ -41,8 +46,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestPartException.class)
     public ResponseEntity<CustomErrorResponse> handleMissingPart(MissingServletRequestPartException ex, WebRequest request) {
         Map<String, Object> details = new HashMap<>();
-        details.put("timestamp", LocalDateTime.now());
-        details.put("path", request.getDescription(false).replace("uri=", ""));
+        details.put(TIMESTAMP, LocalDateTime.now());
+        details.put(PATH, request.getDescription(false).replace(URI_PREFIX, ""));
 
         return new ResponseEntity<>(
                 new CustomErrorResponse(ex.getMessage(), details),

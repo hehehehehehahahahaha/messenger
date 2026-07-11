@@ -40,7 +40,7 @@ public class UpdateProfileDataService {
 
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundCustomException(
-                        String.format("Пользователь с %d не найден", id)));
+                        ResourceNotFoundCustomException.MessageType.USER_NOT_FOUND_WITH_ID_RUS, id));
 
         updateUserFields(user, updateDto);
         Users updatedUser = usersRepository.save(user);
@@ -66,7 +66,7 @@ public class UpdateProfileDataService {
 
     private void validateUsernameUniqueness(String username, Long userId) {
         if (usersRepository.existsByUsernameAndIdNot(username, userId)) {
-            throw new UserAlreadyExistsCustomException("Такой username уже существует");
+            throw new UserAlreadyExistsCustomException(UserAlreadyExistsCustomException.MessageType.MESSAGE_RUS);
         }
     }
 }

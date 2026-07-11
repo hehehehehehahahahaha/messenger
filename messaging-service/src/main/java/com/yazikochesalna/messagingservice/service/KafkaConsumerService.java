@@ -10,18 +10,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaConsumerService {
 
-    private static final String MESSAGES_TOPIC_NAME = "messages";
-    private static final String EVENTS_TOPIC_NAME = "events";
-
     private final WebSocketEventService webSocketEventService;
 
-    @KafkaListener(topics = MESSAGES_TOPIC_NAME)
+    @KafkaListener(topics = KafkaTopicConstant.MESSAGES_TOPIC_NAME)
     public void listenMessage(EventDTO event, Acknowledgment ack) {
         webSocketEventService.broadcastMessageToParticipants(event);
         ack.acknowledge();
     }
 
-    @KafkaListener(topics = EVENTS_TOPIC_NAME)
+    @KafkaListener(topics = KafkaTopicConstant.EVENTS_TOPIC_NAME)
     public void listenEvent(EventDTO event, Acknowledgment ack) {
         webSocketEventService.broadcastEventToParticipants(event);
         ack.acknowledge();

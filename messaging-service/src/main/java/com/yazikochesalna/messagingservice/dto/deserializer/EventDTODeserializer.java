@@ -42,10 +42,10 @@ public class EventDTODeserializer extends StdDeserializer<EventDTO> {
         EventDTO eventDTO = builder.build();
 
 
-        if (node.get("messageId") != null) {
+        if (node.get(DTOFieldConstant.MESSAGE_ID) != null) {
             eventDTO.setMessageId(DTODeserializer.getMessageId(node));
         }
-        if (node.get("timestamp") != null) {
+        if (node.get(DTOFieldConstant.TIMESTAMP) != null) {
             eventDTO.setTimestamp(DTODeserializer.getTime(node));
         }
 

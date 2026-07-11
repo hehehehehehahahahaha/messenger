@@ -1,6 +1,7 @@
 package com.yazikochesalna.fileservice.service;
 
 import com.yazikochesalna.fileservice.advice.MinioServerCustomException;
+import com.yazikochesalna.fileservice.config.properties.MinioProperties;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.StatObjectResponse;
@@ -17,21 +18,23 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DownloadMinioService {
 
+    private static final String ATTACHMENT = "attachment";
+    private static final String ORIGINAL_FILENAME = "original-filename";
+    private static final String CACHE_CONTROL = "no-cache, no-store, must-revalidate";
     private final MinioClient minioClient;
 
-    @Value("${minio.bucket.name}")
-    private String BUCKET;
+    private final MinioProperties minioProperties;
 
     public InputStream getFileStream(String objectPath)
     {
         try {
             return minioClient.getObject(
                     GetObjectArgs.builder()
-                            .bucket(BUCKET)
+                            .bucket(minioProperties.bucket().name())
                             .object(objectPath)
                             .build());
         } catch (Exception e) {
-            throw new MinioServerCustomException("Failed to get file stream: " + e.getMessage());
+            throw new MinioServerCustomException(MinioServerCustomException.MessageType.GET_STREAM_ERROR, e.getMessage());
         }
     }
 
@@ -40,12 +43,12 @@ public class DownloadMinioService {
         headers.setContentType(MediaType.parseMediaType(stat.contentType()));
         headers.setContentLength(stat.size());
         headers.setContentDispositionFormData(
-                "attachment",
+                ATTACHMENT,
                 Optional.ofNullable(stat.userMetadata())
-                        .map(meta -> meta.get("original-filename"))
+                        .map(meta -> meta.get(ORIGINAL_FILENAME))
                         .orElse(defaultFilename)
         );
-        headers.setCacheControl("no-cache, no-store, must-revalidate");
+        headers.setCacheControl(CACHE_CONTROL);
         return headers;
     }
 

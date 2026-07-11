@@ -17,24 +17,32 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String TIMESTAMP = "timestamp";
+    private static final String PATH = "path";
+    private static final String URI_PREFIX = "uri=";
+    private static final String ERRORS = "errors";
+    private static final String VALIDATION_FAILED_MESSAGE = "Validation failed";
+    private static final String DEFAULT_MESSAGE = "Произошла ошибка";
+    private final String VALIDATION_ERROR_MESSAGE = "Validation error";
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<CustomErrorResponse> handleValidationExceptions(
             MethodArgumentNotValidException ex, WebRequest request) {
         Map<String, Object> details = new HashMap<>();
-        details.put("timestamp", LocalDateTime.now());
-        details.put("path", request.getDescription(false).replace("uri=", ""));
+        details.put(TIMESTAMP, LocalDateTime.now());
+        details.put(PATH, request.getDescription(false).replace(URI_PREFIX, ""));
 
         Map<String, String> errors = ex.getBindingResult().getAllErrors().stream()
                 .collect(Collectors.toMap(
                         error -> ((FieldError) error).getField(),
-                        error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : "Validation error"
+                        error -> error.getDefaultMessage() != null ? error.getDefaultMessage() : VALIDATION_ERROR_MESSAGE
                 ));
 
-        details.put("errors", errors);
+        details.put(ERRORS, errors);
 
         return new ResponseEntity<>(
-                new CustomErrorResponse("Validation failed", details),
+                new CustomErrorResponse(VALIDATION_FAILED_MESSAGE, details),
                 HttpStatus.BAD_REQUEST
         );
     }
@@ -42,10 +50,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomErrorResponse> handleException(Exception ex, WebRequest request) {
         Map<String, Object> details = new HashMap<>();
-        details.put("timestamp", LocalDateTime.now());
-        details.put("path", request.getDescription(false).replace("uri=", ""));
+        details.put(TIMESTAMP, LocalDateTime.now());
+        details.put(PATH, request.getDescription(false).replace(URI_PREFIX, ""));
 
-        String message = ex.getMessage() != null ? ex.getMessage() : "Произошла ошибка";
+        String message = ex.getMessage() != null ? ex.getMessage() : DEFAULT_MESSAGE;
 
         return new ResponseEntity<>(
                 new CustomErrorResponse(message, details),

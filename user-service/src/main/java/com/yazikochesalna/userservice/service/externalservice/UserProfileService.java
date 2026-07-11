@@ -23,7 +23,8 @@ public class UserProfileService {
 
     public UserProfileDto findUserProfile(Long id) {
         Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundCustomException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundCustomException(
+                        ResourceNotFoundCustomException.MessageType.USER_NOT_FOUND_WITH_ID, id));
 
         return userProfileDtoMapper.toUserProfileDto(user);
     }
@@ -41,7 +42,8 @@ public class UserProfileService {
 
     private Users findUser (Long id){
         Users user = usersRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundCustomException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundCustomException(
+                        ResourceNotFoundCustomException.MessageType.USER_NOT_FOUND_WITH_ID, id));
         return user;
     }
 

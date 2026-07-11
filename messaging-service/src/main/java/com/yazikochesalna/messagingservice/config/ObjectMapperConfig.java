@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 @RequiredArgsConstructor
 public class ObjectMapperConfig {
 
+    private static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
     @Bean
     public com.fasterxml.jackson.databind.ObjectMapper objectMapper() {
         com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
@@ -25,7 +27,7 @@ public class ObjectMapperConfig {
         mapper.disable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE);
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
+        mapper.setDateFormat(new SimpleDateFormat(DATE_FORMAT_PATTERN));
 
         return mapper;
     }

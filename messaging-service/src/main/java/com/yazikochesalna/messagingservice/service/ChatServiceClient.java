@@ -13,9 +13,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ChatServiceClient {
-    public static final String CHECK_USER_IN_CHAT_URL_FORMAT = "%s/api/v1/chats/check/%d/%d";
-    public static final String GET_USERS_BY_CHAT_ID_URL_FORMAT = "%s/api/v1/chats/%d/members";
-    public static final String GET_USER_COMPANIONS_URL_FORMAT = "%s/api/v1/chats/companions/%d";
+    private static final String CHECK_USER_IN_CHAT_URL_FORMAT = "%s/api/v1/chats/check/%d/%d";
+    private static final String GET_USERS_BY_CHAT_ID_URL_FORMAT = "%s/api/v1/chats/%d/members";
+    private static final String GET_USER_COMPANIONS_URL_FORMAT = "%s/api/v1/chats/companions/%d";
     private final WebClient chatServiceWebClient;
     private final JwtService jwtService;
 

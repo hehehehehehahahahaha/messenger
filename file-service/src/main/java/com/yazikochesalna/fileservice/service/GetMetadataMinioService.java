@@ -1,5 +1,6 @@
 package com.yazikochesalna.fileservice.service;
 
+import com.yazikochesalna.fileservice.config.properties.MinioProperties;
 import com.yazikochesalna.fileservice.data.BaseFileInfo;
 import com.yazikochesalna.fileservice.data.MetadataKeys;
 import io.minio.MinioClient;
@@ -18,11 +19,8 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class GetMetadataMinioService {
 
-    @Autowired
     private final MinioClient minioClient;
 
-    @Value("${minio.bucket.name}")
-    private String BUCKET;
 
     public BaseFileInfo buildFileInfo(String fileUuid, StatObjectResponse stat) {
         BaseFileInfo fileInfo = new BaseFileInfo();

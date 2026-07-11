@@ -14,11 +14,15 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final String PATH = "path";
+    private static final String TIMESTAMP = "timestamp";
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ExceptionDTO> handleInvalidMessageFormatCustomException(RuntimeException ex, WebRequest request) {
         Map<String, Object> details = new HashMap<>();
-        details.put("path", request.getDescription(false));
-        details.put("timestamp", LocalDateTime.now());
+        details.put(PATH, request.getDescription(false));
+        details.put(TIMESTAMP, LocalDateTime.now());
 
         var errorResponse = new ExceptionDTO(ex.getMessage(), details);
         return new ResponseEntity<>(errorResponse, getStatus(ex.getClass()));

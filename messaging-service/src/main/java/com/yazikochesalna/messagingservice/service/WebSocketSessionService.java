@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class WebSocketSessionService {
-    public static final String USER_ID_SESSION_ATTRIBUTE_NAME = "userId";
+    private static final String USER_ID_SESSION_ATTRIBUTE_NAME = "userId";
 
     private final Map<Long, Set<ConcurrentWebSocketSessionDecorator>> activeSessions = new ConcurrentHashMap<>();
 
@@ -49,7 +49,7 @@ public class WebSocketSessionService {
     }
 
     public ConcurrentWebSocketSessionDecorator getConcurrentSession(WebSocketSession session) {
-        var userId = (Long) session.getAttributes().get("userId");
+        var userId = (Long) session.getAttributes().get(USER_ID_SESSION_ATTRIBUTE_NAME);
         Set<ConcurrentWebSocketSessionDecorator> userSessions = activeSessions.get(userId);
         if (userSessions != null) {
             return userSessions.stream()
